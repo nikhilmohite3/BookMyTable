@@ -1,0 +1,128 @@
+version: '3.3'
+services:
+  api-gateway:
+    image: api-gateway
+    container_name: api-gateway
+    build:  api-gateway/
+    network_mode: host
+    restart: always
+    ports:
+      - "8080:8080"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+
+  authentication-service:
+    image: authentication-service
+    build: authentication-service/
+    container_name: authentication-service
+    restart: always
+    network_mode: host
+    ports:
+      - "8083:8083"
+  
+  chat-service:
+    image: chat-service
+    build: chat-service/
+    container_name: chat-service
+    restart: always
+    network_mode: host
+    ports:
+      - "9001:9001"
+
+  email-service:
+    image: email-service
+    build: email-service/
+    container_name: email-service
+    restart: always
+    network_mode: host
+    ports:
+      - "8081:8081"
+    depends_on:
+      - rabbitmq
+
+  eureka-server:
+    image: eureka-server
+    container_name: eureka-server
+    build: eureka-server/
+    restart: always
+    network_mode: host
+    ports:
+      - "8761:8761"
+
+  menu-service:
+    image: menu-service
+    container_name: menu-service
+    build: menu-service/
+    restart: always
+    network_mode: host
+    ports:
+      - "8091:8091"
+
+  order-service:
+    image: order-service
+    build: order-service/
+    container_name: order-service
+    restart: always
+    network_mode: host
+    ports:
+      - "8180:8180"
+    depends_on:
+      - rabbitmq
+
+  payment-service:
+    image: payment-service
+    build: payment-service/
+    container_name: payment-service
+    restart: always
+    network_mode: host
+    ports:
+      - "9112:9112"
+
+  registration-service:
+    image: registration-service
+    build: registration-service/
+    container_name: registration-service
+    restart: always
+    network_mode: host
+    ports:
+      - "9090:9090"
+
+  table-service:
+    image: table-service
+    build: table-service/
+    container_name: table-service
+    restart: always
+    network_mode: host
+    ports:
+      - "9191:9191"
+
+  mongodb:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+     - /data/db:/data/db
+
+  mysqlService:
+    image: mysql:latest
+    container_name: mysql_container
+    network_mode: host
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USERNAME: root
+      #      MYSQL_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+     - /opt/mysql_data:/var/lib/mysql
